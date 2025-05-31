@@ -1,0 +1,338 @@
+{
+  "name": "RAG",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        200
+      ],
+      "id": "1781bf97-9720-44d0-b6a6-a4221deb6072",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1mOxXmnVXPUH1jt7C6Z8LCRTKHDN3KuAlTYKRvS1OO7I/edit?tab=t.0"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        100,
+        200
+      ],
+      "id": "70c9adb2-bc0e-4e86-95b2-a8e53d9dda49",
+      "name": "Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rxWhOKLISxa8DNnc",
+          "name": "Google Docs account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8ncourse",
+          "mode": "list",
+          "cachedResultName": "n8ncourse"
+        },
+        "options": {
+          "pineconeNamespace": "personal_chat"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.1,
+      "position": [
+        320,
+        200
+      ],
+      "id": "14d4acbd-67b6-4ce3-b1fc-2b34201fdc35",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "VZvl8jP4BznEvPTn",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        460,
+        420
+      ],
+      "id": "e8fbc76c-d3bc-4b0e-bf11-ce2fe3fe9feb",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        560,
+        640
+      ],
+      "id": "0b6be6ef-21a4-4861-a687-24a9f5f4431a",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e7ef8a0c-defa-4ec4-ba90-f8e36663009b",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        940,
+        280
+      ],
+      "webhookId": "dec328cc-f47e-4727-b1c5-7370be86a958",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "content": "### Chat with database\nEmbed the incoming chat message and use it retrieve relevant chunks from the vector store. These are passed to the model to formulate an answer ",
+        "height": 627,
+        "width": 534,
+        "color": 7
+      },
+      "id": "b1d0f936-0299-45c4-ae94-44b1b6f11a31",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1120,
+        200
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "55730dfc-87b7-49f5-b3da-589c1319e98b",
+      "name": "Question & Answer1",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1180,
+        280
+      ],
+      "typeVersion": 1.8
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "856b7d6a-936b-42a1-8545-6f93e3682ceb",
+      "name": "Embeddings OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        1300,
+        700
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "EvZ4MPqiOGPqM1fe",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "personal_chat",
+        "toolDescription": "call this tool to chat with users",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8ncourse",
+          "mode": "list",
+          "cachedResultName": "n8ncourse"
+        },
+        "includeDocumentMetadata": false,
+        "options": {}
+      },
+      "id": "b6d8dcf0-77c4-4292-9a64-0a37f3a2ba52",
+      "name": "Pinecone Vector Store3",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "position": [
+        1300,
+        500
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "pineconeApi": {
+          "id": "VZvl8jP4BznEvPTn",
+          "name": "PineconeApi account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "id": "b4fc0169-635e-457f-a2b7-c76e7da914b3",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        1160,
+        540
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "EvZ4MPqiOGPqM1fe",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        280,
+        620
+      ],
+      "id": "af9728ea-f89f-4faa-a80f-838f2839e23b",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "EvZ4MPqiOGPqM1fe",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Question & Answer1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store3",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store3": {
+      "ai_tool": [
+        [
+          {
+            "node": "Question & Answer1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Question & Answer1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "eadc22e7-8eba-40cb-ae6d-ff2cecf3905c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "665932375af4432c61d082c40e6f5d44f6a3f37d9891ea1aad2dfa1c5a4b901c"
+  },
+  "id": "78z9MTTKqden65xp",
+  "tags": []
+}
